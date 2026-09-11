@@ -1,0 +1,94 @@
+# Keeps the bar's music right without anyone doing anything.
+#
+# It runs every fifteen minutes and, almost always, finds everything already correct
+# and does nothing. It only acts when reality differs from the schedule: after a power
+# cut, when a slot changes, or when somebody moves a volume by hand.
+#
+# To turn it off, put a # in front of the two "schedule" lines below and commit.
+# Running it by hand from the Actions tab still works either way.
+
+name: Bar music
+
+on:
+  workflow_dispatch:
+    inputs:
+      live:
+        description: "Actually change the music? Leave as no to see what it would do."
+        required: true
+        default: "no"
+        type: choice
+        options: ["no", "yes"]
+
+  # Every fifteen minutes, deliberately off the quarter hours: GitHub is busiest at
+  # :00, :15, :30 and :45 and skips those. GitHub's own timer is also unreliable and
+  # can go hours without firing. If that happens, the starter pack explains how a free
+  # outside timer (cron-job.org) pokes this workflow on time instead. When it does, it
+  # must send live: "yes", or the run is only a rehearsal.
+  schedule:
+    - cron: "2,17,32,47 * * * *"
+
+permissions:
+  # write, only so the last step can publish a one-line verdict to the 'status'
+  # branch. Nothing else here writes.
+  contents: write
+
+jobs:
+  music:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # No outside packages. Nothing to install.
+
+      - name: Work out the mode
+        id: mode
+        env:
+          IN_LIVE: ${{ inputs.live }}
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ] || [ "$IN_LIVE" = "yes" ]; then
+            echo "flag=--live" >> "$GITHUB_OUTPUT"
+            echo "Mode: live"
+          else
+            echo "flag=" >> "$GITHUB_OUTPUT"
+            echo "Mode: dry run"
+          fi
+
+      - name: Set the music
+        id: setmusic
+        env:
+          SONOS_CLIENT_ID: ${{ secrets.SONOS_CLIENT_ID }}
+          SONOS_CLIENT_SECRET: ${{ secrets.SONOS_CLIENT_SECRET }}
+          # The four secrets for the one store whose id in config.json is "bar".
+          # If you ever add a second store with id "patio", add SONOS_*_PATIO here.
+          SONOS_TOKEN_BAR: ${{ secrets.SONOS_TOKEN_BAR }}
+          SONOS_HOUSEHOLD_BAR: ${{ secrets.SONOS_HOUSEHOLD_BAR }}
+          SONOS_GROUP_BAR: ${{ secrets.SONOS_GROUP_BAR }}
+          # The speaker the store is found by. A group id dies whenever the speakers
+          # regroup; a speaker serial does not.
+          SONOS_SPEAKER_BAR: ${{ secrets.SONOS_SPEAKER_BAR }}
+        run: python run.py ${{ steps.mode.outputs.flag }} | tee run-output.txt
+
+      # Publishes the verdict to a 'status' branch so it can be read without opening
+      # the Actions page. Writes only when the verdict changes or once a day, so
+      # silence is meaningful. continue-on-error: a heartbeat that can stop the thing
+      # it watches is worse than no heartbeat.
+      - name: Publish the verdict to the status branch
+        if: always()
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_EXIT_CODE: ${{ steps.setmusic.outcome == 'success' && '0' || '1' }}
+        run: python publish_status.py
+
+      - name: Say what happened, only when there is something to say
+        if: always()
+        run: |
+          if grep -q "SOMETHING NEEDS ATTENTION" run-output.txt; then
+            { echo "## Something needs attention"; echo ""; echo '```'; cat run-output.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          elif grep -q " -> " run-output.txt || grep -q "changed to" run-output.txt || grep -q "stopped it" run-output.txt; then
+            { echo "## Changes made"; echo ""; echo '```'; cat run-output.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          fi

@@ -1,0 +1,54 @@
+{
+  "_comment": "Your whole schedule lives in this one file. Times are 24-hour. Playlist names must match your Sonos favourites EXACTLY, capitals included. Claude will fill this in with you.",
+  "timezone": "America/New_York",
+  "stores": [
+    {
+      "id": "bar",
+      "name": "The bar",
+      "_ids_note": "Leave these three as they are. The real values are GitHub secrets named SONOS_HOUSEHOLD_BAR, SONOS_GROUP_BAR and SONOS_SPEAKER_BAR, and the program reads them from there.",
+      "household": "KEPT_IN_GITHUB_SECURE_STORAGE",
+      "group": "KEPT_IN_GITHUB_SECURE_STORAGE",
+      "speaker": "KEPT_IN_GITHUB_SECURE_STORAGE",
+      "enabled": true,
+      "stop_when_closed": true,
+      "leave_off_if_stopped_by_hand": true,
+      "_leave_off_note": "If someone turns the music off by hand, it stays off until the next slot starts, rather than restarting every fifteen minutes.",
+      "slots": [
+        {
+          "name": "Afternoon",
+          "from": "12:00",
+          "to": "17:00",
+          "volume": 18,
+          "playlist_pool": ["Afternoon 1", "Afternoon 2"],
+          "_note": "A pool of two or more is dealt one per day so the staff do not hear the same one daily. A single name works too."
+        },
+        {
+          "name": "Early evening",
+          "from": "17:00",
+          "to": "20:00",
+          "volume": 24,
+          "playlist_pool": ["Early evening 1", "Early evening 2", "Early evening 3"]
+        },
+        {
+          "name": "Peak",
+          "from": "20:00",
+          "to": "23:00",
+          "volume": 30,
+          "playlist_pool": ["Peak 1", "Peak 2", "Peak 3"]
+        },
+        {
+          "name": "Late",
+          "from": "23:00",
+          "to": "02:00",
+          "volume": 24,
+          "playlist_pool": ["Late 1", "Late 2"]
+        }
+      ],
+      "_volume_note": "The volume on each slot is a ceiling. Every fifteen minutes the program eases the speakers back to it if someone turned them up."
+    }
+  ],
+  "slots": [],
+  "seasons": {},
+  "holidays": [],
+  "_seasons_holidays_note": "Empty to start. Once the basics have run for a week, Claude can add a December block or a seasonal swap here."
+}
