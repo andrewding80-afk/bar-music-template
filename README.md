@@ -5,9 +5,9 @@ different one each day, volume held to a ceiling, and it stays off when someone 
 Runs for free on GitHub every fifteen minutes and reaches the speakers through Sonos's own service,
 so nothing is installed in the building.
 
-**Set it up with the starter pack.** This repository is meant to be used alongside a guided document
-called `BAR_MUSIC__START_HERE.md`, which walks a non-technical owner through every step with Claude
-as the guide. If you were sent that document, follow it. If not, ask whoever gave you this link.
+**Set it up with the starter pack.** `BAR_MUSIC__START_HERE.md` in this repository walks a
+non-technical owner through every step, with Claude as the guide. Open it, read Part One, and do
+the three steps there. That is the whole way in.
 
 `config.json` is the only file you edit. It holds your schedule. Everything else is the program.
 
