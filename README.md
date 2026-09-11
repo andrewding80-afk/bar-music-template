@@ -1,7 +1,7 @@
 # Bar music
 
 Music for a bar that runs itself: the right playlist at the right time at the right volume, a
-different one each day, volume held to a ceiling, and it stays off when someone turns it off by hand.
+different one each day, volume held to a ceiling, and if someone turns it off by hand it is back on within fifteen minutes.
 Runs for free on GitHub every fifteen minutes and reaches the speakers through Sonos's own service,
 so nothing is installed in the building.
 

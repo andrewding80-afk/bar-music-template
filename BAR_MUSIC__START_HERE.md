@@ -21,7 +21,10 @@ a customer. This pack builds the thing that fixes all four:
 - **A different playlist each day**, rotated, so staff are not hearing the same forty songs for
   months.
 - **A volume ceiling** per part of the day, eased back down if someone turns it up and forgets.
-- **Respect for a manual off**: turn it off by hand and it stays off until the next change of the day.
+- **Staff can't leave it off.** Stop the music and an alarm does nothing until its next set time.
+  This checks every fifteen minutes and puts it back on. (If you would rather it stay off once
+  someone stops it by hand, that is a one-line setting. The first build uses the self-correcting
+  version in the shops and the stay-off version at home.)
 - **A warning when it breaks**, instead of a quiet room nobody notices until service.
 
 ## What a "project" is, in one paragraph
@@ -440,8 +443,12 @@ He describes his day in plain English; you turn it into the file using the exact
 Stage 3, then read it back. Set two things from the start:
 
 - A volume **ceiling** per block, eased back if someone turns it up.
-- What a manual off does. Default: stays off until the next change of the day, then resumes. Usually
-  right for a bar.
+- What a manual off does. Two choices, one line in the config (`leave_off_if_stopped_by_hand`).
+  **Self-correcting** (`false`, the default in the template): if someone turns the music off, the
+  program turns it back on at its next check, within fifteen minutes, so staff cannot leave the bar
+  silent. This is what a shop wants. **Stay off** (`true`): it stays off until the next slot
+  starts, then resumes. This is what a home wants, where turning it off means you want quiet. Ask
+  him which, and default to self-correcting.
 
 **How he saves a file on GitHub** (there is no Save button; the word is **commit**):
 

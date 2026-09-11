@@ -11,15 +11,18 @@
       "speaker": "KEPT_IN_GITHUB_SECURE_STORAGE",
       "enabled": true,
       "stop_when_closed": true,
-      "leave_off_if_stopped_by_hand": true,
-      "_leave_off_note": "If someone turns the music off by hand, it stays off until the next slot starts, rather than restarting every fifteen minutes.",
+      "leave_off_if_stopped_by_hand": false,
+      "_leave_off_note": "false means: if someone turns the music off by hand, the program turns it back on at its next check, within fifteen minutes, so staff cannot leave the bar silent. This is what a shop wants. Set it to true and it instead stays off until the next slot starts, which is what a home wants, where turning it off means you want quiet.",
       "slots": [
         {
           "name": "Afternoon",
           "from": "12:00",
           "to": "17:00",
           "volume": 18,
-          "playlist_pool": ["Afternoon 1", "Afternoon 2"],
+          "playlist_pool": [
+            "Afternoon 1",
+            "Afternoon 2"
+          ],
           "_note": "A pool of two or more is dealt one per day so the staff do not hear the same one daily. A single name works too."
         },
         {
@@ -27,21 +30,32 @@
           "from": "17:00",
           "to": "20:00",
           "volume": 24,
-          "playlist_pool": ["Early evening 1", "Early evening 2", "Early evening 3"]
+          "playlist_pool": [
+            "Early evening 1",
+            "Early evening 2",
+            "Early evening 3"
+          ]
         },
         {
           "name": "Peak",
           "from": "20:00",
           "to": "23:00",
           "volume": 30,
-          "playlist_pool": ["Peak 1", "Peak 2", "Peak 3"]
+          "playlist_pool": [
+            "Peak 1",
+            "Peak 2",
+            "Peak 3"
+          ]
         },
         {
           "name": "Late",
           "from": "23:00",
           "to": "02:00",
           "volume": 24,
-          "playlist_pool": ["Late 1", "Late 2"]
+          "playlist_pool": [
+            "Late 1",
+            "Late 2"
+          ]
         }
       ],
       "_volume_note": "The volume on each slot is a ceiling. Every fifteen minutes the program eases the speakers back to it if someone turned them up."
